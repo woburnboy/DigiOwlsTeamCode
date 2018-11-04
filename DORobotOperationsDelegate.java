@@ -49,6 +49,21 @@ public class DORobotOperationsDelegate  {
     private static final double     COUNTS_PER_INCH_Latch         = (COUNTS_PER_MOTOR_REV_Latch * DRIVE_GEAR_REDUCTION_Latch) /
             (WHEEL_DIAMETER_INCHES_Latch * 3.1415);
 
+    public void unlockLatchServo(LinearOpMode mode, double timeOut){
+        // Ensure that the opmode is still active
+        if (mode.opModeIsActive()) {
+            robot.latchLockServo.setPosition(FramedDOBot.END_LATCH_SERVO);
+
+            runtime.reset();
+            while (mode.opModeIsActive() &&
+                   (robot.latchMotor.isBusy() ) &&
+                   (runtime.seconds() < timeOut)){
+            }
+            mode.telemetry.addData("unlatching the lock servo %.1f s", runtime.seconds());
+            mode.telemetry.update();
+        }
+    }
+
     public void UnLatchRobot(LinearOpMode mode, double speed, double inches, double timeOut, String operation){
         // Ensure that the opmode is still active
         int newUnlatchTarget = 0;
@@ -62,8 +77,8 @@ public class DORobotOperationsDelegate  {
             robot.latchMotor.setPower(Math.abs(speed));
             runtime.reset();
             while (mode.opModeIsActive() &&
-                   (robot.latchMotor.isBusy() ) &&
-                   (runtime.seconds() < timeOut)){
+                    (robot.latchMotor.isBusy() ) &&
+                    (runtime.seconds() < timeOut)){
 
             }
             // Stop all motion;
