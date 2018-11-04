@@ -150,7 +150,7 @@ public class DO_Test_UnlatchLatchMotorController extends LinearOpMode {
         waitForStart();
         encoderLatch(DRIVE_SPEED,  3.5,  3.0);  // Bring up the elevator by 3.5 inches
         encoderLatch(DRIVE_SPEED,  0.3,  3.0);  // S1: Forward 47 Inches with 5 Sec timeout
-        move(0.5, -0.5, -0.5, 0.5, 500);    // move 3 sec
+        move(0.5, -0.5, -0.5, 0.5, 500);    // strafe a little for half a second
 
 //        move(0.5, 0.5, 0.5, 0.5, 2000);    // move forward for two seconds
         move(-0.5, -0.5, -0.5, -0.5, 2000);    // move backward for 1 sec
