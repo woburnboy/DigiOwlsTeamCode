@@ -66,7 +66,7 @@ public class FramedDOBot
 
     public static final double MID_LATCH_SERVO       =  0.5 ;
     public static final double ZERO_LATCH_SERVO       =  0 ;
-    public static final double END_LATCH_SERVO       =  1 ;
+    public static final double END_LATCH_SERVO       =  .9 ;
     public static final double MID_SERVO       =  0.5 ;
 
     public static final double ARM_UP_POWER    =  0.45 ;
