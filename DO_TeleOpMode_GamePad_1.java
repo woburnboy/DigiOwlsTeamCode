@@ -31,12 +31,15 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.Range;
 
 @TeleOp(name="Digital Owls TeleOp Mode", group="DigiOwls")
 //@Disabled
 public class DO_TeleOpMode_GamePad_1 extends LinearOpMode {
     private FramedDOBot robot = new FramedDOBot();   // Use a Pushbot's hardware
+    private  Boolean toggleGripDirection = false;
+
     @Override
     public void runOpMode() {
         robot.init(hardwareMap);
@@ -54,9 +57,34 @@ public class DO_TeleOpMode_GamePad_1 extends LinearOpMode {
             else if((gamepad1.right_stick_x != 0) || (gamepad1.right_stick_y != 0)){
                 TurnRobot();
             }
+            else if (gamepad2.right_stick_y != 0) {
+                double elbowOffset = Range.clip(gamepad2.right_stick_y, -0.5, 0.5);
+                robot.leftElbow.setPosition(robot.MID_SERVO + elbowOffset);
+                robot.rightElbow.setPosition(robot.MID_SERVO - elbowOffset);
+            }
+            else if(gamepad2.left_stick_y != 0){
+                double dist  =  Range.clip(gamepad1.left_stick_y, -1.0, 1.0) ;
+                robot.shoulder.setPower(-dist);
+            }
+            else if (gamepad2.left_bumper){
+                robot.palm.setPower(0);
+                if(toggleGripDirection) {
+                    robot.palm.setDirection(DcMotor.Direction.FORWARD);
+                    toggleGripDirection = false;
+                }
+                else {
+                    robot.palm.setDirection(DcMotor.Direction.REVERSE);
+                    toggleGripDirection = true;
+                }
+                robot.palm.setPower(1);
+            }
+            else if (gamepad2.right_bumper) {
+                robot.palm.setPower(0);
+            }
             else {
                 robot.AllDrivesSetPower(0, true);
-                //robot.latchMotor.setPower(0);
+                robot.latchMotor.setPower(0);
+                robot.shoulder.setPower(0);
             }
         }
     }
