@@ -36,7 +36,7 @@ import com.qualcomm.robotcore.util.Range;
 
 @TeleOp(name="Digital Owls TeleOp Mode", group="DigiOwls")
 //@Disabled
-public class DO_TeleOpMode_GamePad_1 extends LinearOpMode {
+public class DO_TeleOpMode extends LinearOpMode {
     private FramedDOBot robot = new FramedDOBot();   // Use a Pushbot's hardware
     private  Boolean toggleGripDirection = false;
 
