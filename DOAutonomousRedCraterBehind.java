@@ -62,30 +62,51 @@ public class DOAutonomousRedCraterBehind extends LinearOpMode {
         telemetry.setAutoClear(false);
 
         //Unlatch robot
-        robotOpsDelegate.UnLatchRobot(this, DRIVE_SPEED, 5, 5, "Unlatching the robot");
+//        //First we move a bit up
+//        robotOpsDelegate.UnLatchRobot(this, DRIVE_SPEED, -0.8, 5, "Unlatching the robot");
+//        //Then we unlock the latch Servo
+//        robotOpsDelegate.unlockLatchServo(this,5);
+//        // then we bring down the robot
+//        robotOpsDelegate.UnLatchRobot(this, DRIVE_SPEED, 3.5, 5, "Unlatching the robot");
 
         //run lateral
-        robotOpsDelegate.encoderDrive(this, DRIVE_SPEED,2,-2,-2,2, 5.0, "Move away (right) from notch", true);
+        robotOpsDelegate.encoderDrive(this, DRIVE_SPEED,-4,4,4,-4, 5.0, "Move away (right) from notch", true);
 
         //run forward
-        robotOpsDelegate.encoderDrive(this, DRIVE_SPEED,10,10,10,10, 5.0, "Move forward", false);
+        robotOpsDelegate.encoderDrive(this, 0.9,12,12,12,12, 5.0, "Move forward", false);
 
         //run lateral to left for 10inch to hit all the jewels
 //        //Gyanesh MoveLeftScanAndHitJewel();
 //
-        //Turn to right
-        robotOpsDelegate.encoderDrive(this, DRIVE_SPEED,5, -5, 5, -5, 5, "Lateral right", false);
+        //Turn to left
+        robotOpsDelegate.encoderDrive(this, DRIVE_SPEED,-20, 20, -20, 20, 5000, "Lateral left", true);
 
         //run towards wall
-        robotOpsDelegate.encoderDrive(this, DRIVE_SPEED,-20, -20, -20, -20, 5, "Lateral right", false);
+        robotOpsDelegate.encoderDrive(this, DRIVE_SPEED,48, 48, 48, 48, 5000, "Lateral right", false);
 
-//        //Turn right parallel to wall
-        robotOpsDelegate.encoderDrive(this, DRIVE_SPEED,5, -5, 5, -5, 5, "Left for clearance", false);
+//        //Turn slight left
+        robotOpsDelegate.encoderDrive(this, DRIVE_SPEED,-16, 16, -16, 16, 5000, "slight left", true);
 
         //run towards team's zone
-        robotOpsDelegate.encoderDrive(this, DRIVE_SPEED,-20, -20, -20,-20, 5, "Reaching zone", false);
+        robotOpsDelegate.encoderDrive(this, 0.9,60, 60, 60,60, 5000, "Reaching zone", false);
 //
 //        //Finally, go and park in crater
-        robotOpsDelegate.encoderDrive(this, DRIVE_SPEED,30, 30, 30,30, 5, "Parking to carater", false);
+//        robotOpsDelegate.encoderDrive(this, DRIVE_SPEED,30, 30, 30,30, 5, "Parking to carater", false);
+
+        //Start the reverse Journey
+        robotOpsDelegate.encoderDrive(this, 0.9,-60, -60, -60,-60, 5000, "Coming Back ", false);
+
+        //Turn slight Right
+        robotOpsDelegate.encoderDrive(this, DRIVE_SPEED,16, -16, 16, -16, 5000, "slight Right", true);
+
+        //run towards middle
+        robotOpsDelegate.encoderDrive(this, DRIVE_SPEED,-44, -44, -44, -44, 5000, "Run to Middle", false);
+
+        //Turn to crater
+        robotOpsDelegate.encoderDrive(this, DRIVE_SPEED,20, -20, 20, -20, 5000, "Lateral right", true);
+
+        //run forward and touch the wall of crater
+        robotOpsDelegate.encoderDrive(this, 0.9,30,30,30,30, 5.0, "Move forward", false);
+
     }
 }

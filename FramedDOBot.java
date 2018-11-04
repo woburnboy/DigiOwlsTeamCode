@@ -58,18 +58,23 @@ public class FramedDOBot
     public DcMotor latchMotor   = null;
     //public Servo testServo = null;
     public DistanceSensor sensorDistance = null;
-//    public Gyroscope gyro = null;
-//    public DigitalChannel digitalTouch = null;
-//    public DcMotor  leftDrive   = null;
-    public DcMotor  shoulder    = null;
-    public DcMotor  palm        = null;
-    public Servo leftElbow = null;
-    public Servo rightElbow = null;
+//    public DcMotor  shoulder    = null;
+//    public DcMotor  palm        = null;
+//    public Servo    leftClaw    = null;
+//    public Servo    rightClaw   = null;
+    public Servo    latchLockServo = null;
 
+    public static final double MID_LATCH_SERVO       =  0.5 ;
+    public static final double ZERO_LATCH_SERVO       =  0 ;
+    public static final double END_LATCH_SERVO       =  1 ;
     public static final double MID_SERVO       =  0.5 ;
+
+    public static final double ARM_UP_POWER    =  0.45 ;
+    public static final double ARM_DOWN_POWER  = -0.45 ;
 
     /* local OpMode members. */
     private HardwareMap hwMap           =  null;
+    private ElapsedTime period  = new ElapsedTime();
 
     /* Constructor */
     public FramedDOBot(){
@@ -86,18 +91,20 @@ public class FramedDOBot
 //        leftArm    = hwMap.get(DcMotor.class, "left_arm");
 //        gyro = hwMap.get(Gyroscope.class, "imu");
 //        testMotor = hwMap.get(DcMotor.class, "testMotor39530");
-        leftElbow = hwMap.get(Servo.class, "lefthand");
-        rightElbow = hwMap.get(Servo.class, "righthand");
-        shoulder        = hwMap.get(DcMotor.class,   "shoulder");
-        palm            = hwMap.get(DcMotor.class,"palm");
+//        leftClaw  = hwMap.get(Servo.class, "lefthand"); //Commented by Amit
+//        rightClaw = hwMap.get(Servo.class, "righthand"); //Commented by Amit
+        latchLockServo  = hwMap.get(Servo.class, "latchLockServo");
+
+//        shoulder        = hwMap.get(DcMotor.class,   "shoulder"); //Commented by Amit
+//        palm            = hwMap.get(DcMotor.class,"palm"); //Commented by Amit
         latchMotor      = hwMap.get(DcMotor.class, "latchMotor");
         leftDrive       = hwMap.get(DcMotor.class,    "leftdrive");
         leftDriveBack   = hwMap.get(DcMotor.class,"leftdriveBack");
         rightDrive      = hwMap.get(DcMotor.class,   "rightdrive");
         rightDriveBack  = hwMap.get(DcMotor.class,"rightdriveBack");
 
-        shoulder.setDirection(DcMotor.Direction.REVERSE);
-        palm.setDirection(DcMotor.Direction.REVERSE);
+//        shoulder.setDirection(DcMotor.Direction.REVERSE); //Commented by Amit
+//        palm.setDirection(DcMotor.Direction.REVERSE); //Commented by Amit
         latchMotor.setDirection(DcMotor.Direction.REVERSE);     // Set to REVERSE if using AndyMark motors
         leftDrive.setDirection(DcMotor.Direction.REVERSE);      // Set to REVERSE if using AndyMark motors
         leftDriveBack.setDirection(DcMotor.Direction.REVERSE);  // Set to REVERSE if using AndyMark motors
@@ -110,21 +117,22 @@ public class FramedDOBot
         // Set all motors to zero power
         AllDrivesSetPower(0, true);
         latchMotor.setPower(0);
-        shoulder.setPower(0);
-        palm.setPower(0);
+//        shoulder.setPower(0); //Commented by Amit
+//        palm.setPower(0); //Commented by Amit
         //        leftArm.setPower(0);
 
         // Set all motors to run without encoders.
         // May want to use RUN_USING_ENCODERS if encoders are installed.
-        shoulder.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+//        shoulder.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER); //Commented by Amit
         leftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         rightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         leftDriveBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         rightDriveBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         latchMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         // Define and initialize ALL installed servos.
-        leftElbow.setPosition(MID_SERVO);
-        rightElbow.setPosition(MID_SERVO);
+//        leftClaw.setPosition(MID_SERVO); //Commented by Amit
+//        rightClaw.setPosition(MID_SERVO); //Commented by Amit
+        latchLockServo.setPosition(ZERO_LATCH_SERVO);
     }
 
     public void AllDrivesSetPower(double power, Boolean turnRearMotor) {
