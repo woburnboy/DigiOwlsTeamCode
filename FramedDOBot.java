@@ -29,9 +29,7 @@
 
 package org.firstinspires.ftc.teamcode;
 
-import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -67,6 +65,7 @@ public class FramedDOBot
     public DcMotor  palm        = null;
     public Servo    leftClaw    = null;
     public Servo    rightClaw   = null;
+    public Servo    latchLockServo = null;
 
     public static final double MID_SERVO       =  0.5 ;
     public static final double ARM_UP_POWER    =  0.45 ;
@@ -93,6 +92,8 @@ public class FramedDOBot
 //        testMotor = hwMap.get(DcMotor.class, "testMotor39530");
         leftClaw  = hwMap.get(Servo.class, "lefthand");
         rightClaw = hwMap.get(Servo.class, "righthand");
+        latchLockServo  = hwMap.get(Servo.class, "latchLock");
+
         shoulder        = hwMap.get(DcMotor.class,   "shoulder");
         palm            = hwMap.get(DcMotor.class,"palm");
         latchMotor      = hwMap.get(DcMotor.class, "latchMotor");
@@ -130,6 +131,7 @@ public class FramedDOBot
         // Define and initialize ALL installed servos.
         leftClaw.setPosition(MID_SERVO);
         rightClaw.setPosition(MID_SERVO);
+        latchLockServo.setPosition(MID_SERVO);
     }
 
     public void AllDrivesSetPower(double power, Boolean turnRearMotor) {
