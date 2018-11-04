@@ -29,9 +29,12 @@
 
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 /**
@@ -60,10 +63,10 @@ public class FramedDOBot
 //    public Gyroscope gyro = null;
 //    public DigitalChannel digitalTouch = null;
 //    public DcMotor  leftDrive   = null;
-//    public DcMotor  rightDrive  = null;
-//    public DcMotor  leftArm     = null;
-//    public Servo    leftClaw    = null;
-//    public Servo    rightClaw   = null;
+    public DcMotor  shoulder    = null;
+    public DcMotor  palm        = null;
+    public Servo    leftClaw    = null;
+    public Servo    rightClaw   = null;
 
     public static final double MID_SERVO       =  0.5 ;
     public static final double ARM_UP_POWER    =  0.45 ;
@@ -88,12 +91,18 @@ public class FramedDOBot
 //        leftArm    = hwMap.get(DcMotor.class, "left_arm");
 //        gyro = hwMap.get(Gyroscope.class, "imu");
 //        testMotor = hwMap.get(DcMotor.class, "testMotor39530");
+        leftClaw  = hwMap.get(Servo.class, "lefthand");
+        rightClaw = hwMap.get(Servo.class, "righthand");
+        shoulder        = hwMap.get(DcMotor.class,   "shoulder");
+        palm            = hwMap.get(DcMotor.class,"palm");
         latchMotor      = hwMap.get(DcMotor.class, "latchMotor");
         leftDrive       = hwMap.get(DcMotor.class,    "leftdrive");
         leftDriveBack   = hwMap.get(DcMotor.class,"leftdriveBack");
         rightDrive      = hwMap.get(DcMotor.class,   "rightdrive");
         rightDriveBack  = hwMap.get(DcMotor.class,"rightdriveBack");
 
+        shoulder.setDirection(DcMotor.Direction.REVERSE);
+        palm.setDirection(DcMotor.Direction.REVERSE);
         latchMotor.setDirection(DcMotor.Direction.REVERSE);     // Set to REVERSE if using AndyMark motors
         leftDrive.setDirection(DcMotor.Direction.REVERSE);      // Set to REVERSE if using AndyMark motors
         leftDriveBack.setDirection(DcMotor.Direction.REVERSE);  // Set to REVERSE if using AndyMark motors
@@ -106,24 +115,23 @@ public class FramedDOBot
         // Set all motors to zero power
         AllDrivesSetPower(0, true);
         latchMotor.setPower(0);
+        shoulder.setPower(0);
+        palm.setPower(0);
         //        leftArm.setPower(0);
 
-// Set all motors to run without encoders.
-// May want to use RUN_USING_ENCODERS if encoders are installed.
-//        leftDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-//        rightDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-//        leftArm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        // Set all motors to run without encoders.
+        // May want to use RUN_USING_ENCODERS if encoders are installed.
+        shoulder.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         leftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         rightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         leftDriveBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         rightDriveBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         latchMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         // Define and initialize ALL installed servos.
-//        leftClaw  = hwMap.get(Servo.class, "left_hand");
-//        rightClaw = hwMap.get(Servo.class, "right_hand");
-//        leftClaw.setPosition(MID_SERVO);
-//        rightClaw.setPosition(MID_SERVO);
+        leftClaw.setPosition(MID_SERVO);
+        rightClaw.setPosition(MID_SERVO);
     }
+
     public void AllDrivesSetPower(double power, Boolean turnRearMotor) {
         leftDrive.setPower(power);
         rightDrive.setPower(power);
@@ -143,3 +151,4 @@ public class FramedDOBot
         rightDriveBack.setMode(mode);
     }
 }
+
