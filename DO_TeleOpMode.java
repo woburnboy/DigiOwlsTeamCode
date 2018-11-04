@@ -59,40 +59,48 @@ public class DO_TeleOpMode extends LinearOpMode {
             }
             else if (gamepad2.right_stick_y != 0) {
                 double elbowOffset = Range.clip(gamepad2.right_stick_y, -0.5, 0.5);
-                robot.leftElbow.setPosition(robot.MID_SERVO + elbowOffset);
-                robot.rightElbow.setPosition(robot.MID_SERVO - elbowOffset);
+//                robot.leftElbow.setPosition(robot.MID_SERVO + elbowOffset);
+//                robot.rightElbow.setPosition(robot.MID_SERVO - elbowOffset);
             }
             else if(gamepad2.left_stick_y != 0){
                 double dist  =  Range.clip(gamepad1.left_stick_y, -1.0, 1.0) ;
-                robot.shoulder.setPower(-dist);
+//                robot.shoulder.setPower(-dist);
             }
-            else if (gamepad2.left_bumper){
-                robot.palm.setPower(0);
-                if(toggleGripDirection) {
-                    robot.palm.setDirection(DcMotor.Direction.FORWARD);
-                    toggleGripDirection = false;
-                }
-                else {
-                    robot.palm.setDirection(DcMotor.Direction.REVERSE);
-                    toggleGripDirection = true;
-                }
-                robot.palm.setPower(1);
-            }
-            else if (gamepad2.right_bumper) {
-                robot.palm.setPower(0);
-            }
+//            else if (gamepad2.left_bumper){
+//                robot.palm.setPower(0);
+//                if(toggleGripDirection) {
+//                    robot.palm.setDirection(DcMotor.Direction.FORWARD);
+//                    toggleGripDirection = false;
+//                }
+//                else {
+//                    robot.palm.setDirection(DcMotor.Direction.REVERSE);
+//                    toggleGripDirection = true;
+//                }
+//                robot.palm.setPower(1);
+//            }
+//            else if (gamepad2.right_bumper) {
+//                robot.palm.setPower(0);
+//            }
             else {
                 robot.AllDrivesSetPower(0, true);
                 robot.latchMotor.setPower(0);
-                robot.shoulder.setPower(0);
+//                robot.shoulder.setPower(0);
             }
         }
     }
 
     private void MovePully(){
         //Latch motor is for reverse direction
-        double latchDist = Range.clip(gamepad1.left_trigger + gamepad1.right_trigger, -1.0, 1.0);
-        robot.leftDrive.setPower(-latchDist);
+        if(gamepad1.left_trigger != 0) {
+            robot.latchMotor.setPower(-Range.clip(gamepad1.left_trigger, -1.0, 1.0));
+        }
+        else if (gamepad1.right_trigger != 0){
+            robot.latchMotor.setPower(Range.clip(gamepad1.right_trigger, -1.0, 1.0));
+        }
+        else
+        {
+            robot.latchMotor.setPower(0);
+        }
     }
 
     private void MoveRobot() {
