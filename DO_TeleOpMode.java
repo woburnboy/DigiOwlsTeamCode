@@ -52,7 +52,12 @@ public class DO_TeleOpMode extends LinearOpMode {
                 MoveRobot();
             }
             else if( (gamepad1.left_trigger != 0) || (gamepad1.right_trigger != 0)) {
+                robot.latchLockServo.setPosition(FramedDOBot.END_LATCH_SERVO);
                 MovePully(); //latching and unlatching
+            }
+            else if ((gamepad1.right_bumper) ||(gamepad1.left_bumper))
+            {
+                robot.latchLockServo.setPosition(FramedDOBot.ZERO_LATCH_SERVO);
             }
             else if((gamepad1.right_stick_x != 0) || (gamepad1.right_stick_y != 0)){
                 TurnRobot();
