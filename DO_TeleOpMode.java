@@ -29,69 +29,102 @@
 
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.Range;
 
 @TeleOp(name="Digital Owls TeleOp Mode", group="DigiOwls")
-//@Disabled
+@Disabled
 public class DO_TeleOpMode extends LinearOpMode {
     private FramedDOBot robot = new FramedDOBot();   // Use a Pushbot's hardware
-    private  Boolean toggleGripDirection = false;
+    private  Boolean stopGripLeftBumper = false;
+    private  Boolean stopGripRightBumper = false;
+    private Boolean powerRearWheels = false;
+    static double     DRIVE_SPEED             = 0.6;
+    static double     TURN_SPEED              = 0.5;
 
     @Override
     public void runOpMode() {
         robot.init(hardwareMap);
+        robot.latchLockServo.setPosition(FramedDOBot.END_LATCH_SERVO);
+
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
             // Run the robot in the telemode (FWD, BWD and turn)
-            if(gamepad1.left_stick_y != 0) {
-                MoveRobot();
+            if(gamepad1.left_stick_y != 0) { // support FWD and BWD movement
+                MoveRobot(powerRearWheels);
             }
-            else if( (gamepad1.left_trigger != 0) || (gamepad1.right_trigger != 0)) {
-                robot.latchLockServo.setPosition(FramedDOBot.END_LATCH_SERVO);
+            else if(gamepad1.right_stick_y != 0){
+                TurnRobot(powerRearWheels);
+            }
+            else if( (gamepad1.left_trigger != 0) || (gamepad1.right_trigger != 0)) { //Moving the pully for latching and unlatching
                 MovePully(); //latching and unlatching
             }
-            else if ((gamepad1.right_bumper) ||(gamepad1.left_bumper))
-            {
+            else if ((gamepad1.right_bumper) || (gamepad1.left_bumper)) {
+                LateralMove(DRIVE_SPEED);
+            }
+            else if (gamepad1.x){
+                robot.latchLockServo.setPosition(FramedDOBot.END_LATCH_SERVO);
+            }
+            else if(gamepad1.b) {
                 robot.latchLockServo.setPosition(FramedDOBot.ZERO_LATCH_SERVO);
             }
-            else if((gamepad1.right_stick_x != 0) || (gamepad1.right_stick_y != 0)){
-                TurnRobot();
+            else if(gamepad1.y) // toggel the power for rear wheel
+            {
+                if(powerRearWheels)
+                    powerRearWheels = false;
+                else
+                    powerRearWheels = true;
             }
             else if (gamepad2.right_stick_y != 0) {
-                double elbowOffset = Range.clip(gamepad2.right_stick_y, -0.5, 0.5);
-//                robot.leftElbow.setPosition(robot.MID_SERVO + elbowOffset);
-//                robot.rightElbow.setPosition(robot.MID_SERVO - elbowOffset);
+                double elbowOffset = Range.clip(gamepad2.right_stick_y/2, -0.5, 0.5);
+                robot.leftElbow.setPosition(robot.MID_SERVO + elbowOffset);
+                robot.rightElbow.setPosition(robot.MID_SERVO - elbowOffset);
+                telemetry.addData("Joystick ",  "Joy value %f, Offset %f, Servo1 %f, Servo 2 %f",
+                        gamepad2.right_stick_y, elbowOffset,robot.leftElbow.getPosition(), robot.rightElbow.getPosition() );
+                telemetry.update();
             }
             else if(gamepad2.left_stick_y != 0){
                 double dist  =  Range.clip(gamepad1.left_stick_y, -1.0, 1.0) ;
 //                robot.shoulder.setPower(-dist);
             }
-//            else if (gamepad2.left_bumper){
-//                robot.palm.setPower(0);
-//                if(toggleGripDirection) {
-//                    robot.palm.setDirection(DcMotor.Direction.FORWARD);
-//                    toggleGripDirection = false;
-//                }
-//                else {
-//                    robot.palm.setDirection(DcMotor.Direction.REVERSE);
-//                    toggleGripDirection = true;
-//                }
-//                robot.palm.setPower(1);
-//            }
-//            else if (gamepad2.right_bumper) {
-//                robot.palm.setPower(0);
-//            }
+            else if (gamepad2.left_bumper){
+                if(stopGripLeftBumper)
+                {
+                    robot.palm.setPower(0);
+                    stopGripLeftBumper = false;
+                }
+                else
+                {
+                    robot.palm.setDirection(DcMotor.Direction.FORWARD);
+                    robot.palm.setPower(DRIVE_SPEED + .2);
+                    stopGripLeftBumper = true;
+                }
+            }
+            else if (gamepad2.right_bumper) {
+                if(stopGripRightBumper)
+                {
+                    robot.palm.setPower(0);
+                    stopGripRightBumper = false;
+                }
+                else
+                {
+                    robot.palm.setDirection(DcMotor.Direction.REVERSE);
+                    robot.palm.setPower(DRIVE_SPEED + .2);
+                    stopGripRightBumper = true;
+                }
+            }
             else {
                 robot.AllDrivesSetPower(0, true);
                 robot.latchMotor.setPower(0);
 //                robot.shoulder.setPower(0);
             }
         }
+        robot.latchLockServo.setPosition(FramedDOBot.ZERO_LATCH_SERVO);
     }
 
     private void MovePully(){
@@ -108,30 +141,33 @@ public class DO_TeleOpMode extends LinearOpMode {
         }
     }
 
-    private void MoveRobot() {
+    private void MoveRobot(boolean powerRearWheels) {
         // Send calculated power to wheels
         double dist  =  Range.clip(gamepad1.left_stick_y, -1.0, 1.0) ;
         robot.leftDrive.setPower(-dist);
         robot.rightDrive.setPower(-dist);
-        robot.leftDriveBack.setPower(-dist);
-        robot.rightDriveBack.setPower(-dist);
+        if(powerRearWheels) {
+            robot.leftDriveBack.setPower(-dist);
+            robot.rightDriveBack.setPower(-dist);
+        }
     }
 
-    private void TurnRobot() {
-        double turn  =  Range.clip(gamepad1.right_stick_y, -1.0, 1.0) ;
-        double lateral = Range.clip(gamepad1.right_stick_x, -1.0, 1.0) ;
-        double dist = turn + lateral;
-        if(gamepad1.right_stick_x != 0){
-            robot.leftDrive.setPower(-dist);
-            robot.leftDriveBack.setPower(dist);
-            robot.rightDrive.setPower(dist);
-            robot.rightDriveBack.setPower(-dist);
+    private void TurnRobot(boolean powerRearWheels) {
+        robot.leftDrive.setPower(Range.clip(gamepad1.right_stick_y, -1.0, 1.0));
+        robot.rightDrive.setPower(-Range.clip(gamepad1.right_stick_y, -1.0, 1.0));
+        if(powerRearWheels){
+            robot.leftDriveBack.setPower(Range.clip(gamepad1.right_stick_y, -1.0, 1.0));
+            robot.rightDriveBack.setPower(-Range.clip(gamepad1.right_stick_y, -1.0, 1.0));
         }
-        else {
-            robot.leftDrive.setPower(dist);
-            robot.leftDriveBack.setPower(dist);
-            robot.rightDrive.setPower(-dist);
-            robot.rightDriveBack.setPower(-dist);
+    }
+
+    private void LateralMove(double speed){
+        if(gamepad1.right_bumper) {
+            speed = (-1) * speed;
         }
+        robot.leftDrive.setPower(-speed);
+        robot.leftDriveBack.setPower(speed);
+        robot.rightDrive.setPower(speed);
+        robot.rightDriveBack.setPower(-speed);
     }
 }
