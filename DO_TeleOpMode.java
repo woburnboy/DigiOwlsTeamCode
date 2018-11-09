@@ -36,7 +36,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.Range;
 
 @TeleOp(name="Digital Owls TeleOp Mode", group="DigiOwls")
-@Disabled
+//@Disabled
 public class DO_TeleOpMode extends LinearOpMode {
     private FramedDOBot robot = new FramedDOBot();   // Use a Pushbot's hardware
     private  Boolean stopGripLeftBumper = false;
@@ -89,8 +89,8 @@ public class DO_TeleOpMode extends LinearOpMode {
                 telemetry.update();
             }
             else if(gamepad2.left_stick_y != 0){
-                double dist  =  Range.clip(gamepad1.left_stick_y, -1.0, 1.0) ;
-                robot.shoulder.setPower(-dist);
+                double dist  =  Range.clip(gamepad2.left_stick_y, -1.0, 1.0) ;
+                robot.shoulder.setPower(-dist/1.3);
             }
             else if (gamepad2.left_bumper){
                 if(stopGripLeftBumper)
@@ -153,11 +153,11 @@ public class DO_TeleOpMode extends LinearOpMode {
     }
 
     private void TurnRobot(boolean powerRearWheels) {
-        robot.leftDrive.setPower(Range.clip(gamepad1.right_stick_y, -1.0, 1.0));
-        robot.rightDrive.setPower(-Range.clip(gamepad1.right_stick_y, -1.0, 1.0));
+        robot.leftDrive.setPower(Range.clip(gamepad1.right_stick_x, -1.0, 1.0));
+        robot.rightDrive.setPower(-Range.clip(gamepad1.right_stick_x, -1.0, 1.0));
         if(powerRearWheels){
-            robot.leftDriveBack.setPower(Range.clip(gamepad1.right_stick_y, -1.0, 1.0));
-            robot.rightDriveBack.setPower(-Range.clip(gamepad1.right_stick_y, -1.0, 1.0));
+            robot.leftDriveBack.setPower(Range.clip(gamepad1.right_stick_x, -1.0, 1.0));
+            robot.rightDriveBack.setPower(-Range.clip(gamepad1.right_stick_x, -1.0, 1.0));
         }
     }
 
