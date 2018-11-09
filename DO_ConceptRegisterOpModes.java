@@ -71,7 +71,7 @@ public class DO_ConceptRegisterOpModes
 
       // Basic Templates
       // manager.register("Iterative Opmode",       BasicOpMode_Iterative.class);
-        manager.register("Gyanesh- TurningWheels",          DO_BasicOpMode_Linear_Turning_Wheels.class);
+        //manager.register("Gyanesh- TurningWheels",          DO_BasicOpMode_Linear_Turning_Wheels.class);
 
       // Driving Samples
       // manager.register("Teleop POV",             PushbotTeleopPOV_Linear.class);
