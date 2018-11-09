@@ -36,7 +36,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.Range;
 
 @TeleOp(name="Digital Owls TeleOp Mode", group="DigiOwls")
-//@Disabled
+@Disabled
 public class DO_TeleOpMode extends LinearOpMode {
     private FramedDOBot robot = new FramedDOBot();   // Use a Pushbot's hardware
     private  Boolean stopGripLeftBumper = false;
