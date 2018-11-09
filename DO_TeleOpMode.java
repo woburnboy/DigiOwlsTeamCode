@@ -49,6 +49,8 @@ public class DO_TeleOpMode extends LinearOpMode {
     public void runOpMode() {
         robot.init(hardwareMap);
         robot.latchLockServo.setPosition(FramedDOBot.END_LATCH_SERVO);
+        robot.leftElbow.setPosition(0);
+        robot.rightElbow.setPosition(1);
 
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
@@ -81,9 +83,9 @@ public class DO_TeleOpMode extends LinearOpMode {
                     powerRearWheels = true;
             }
             else if (gamepad2.right_stick_y != 0) {
-                double elbowOffset = Range.clip(gamepad2.right_stick_y/2, -0.5, 0.5);
-                robot.leftElbow.setPosition(robot.MID_SERVO + elbowOffset);
-                robot.rightElbow.setPosition(robot.MID_SERVO - elbowOffset);
+                double elbowOffset = Range.clip(gamepad2.right_stick_y, 0, 1);
+                robot.leftElbow.setPosition(elbowOffset);
+                robot.rightElbow.setPosition(1 - elbowOffset);
                 telemetry.addData("Joystick ",  "Joy value %f, Offset %f, Servo1 %f, Servo 2 %f",
                         gamepad2.right_stick_y, elbowOffset,robot.leftElbow.getPosition(), robot.rightElbow.getPosition() );
                 telemetry.update();
@@ -91,6 +93,9 @@ public class DO_TeleOpMode extends LinearOpMode {
             else if(gamepad2.left_stick_y != 0){
                 double dist  =  Range.clip(gamepad2.left_stick_y, -1.0, 1.0) ;
                 robot.shoulder.setPower(-dist/1.3);
+                telemetry.addData("Shoulder ",  "Shoulder Position %d",
+                        robot.shoulder.getCurrentPosition());
+                telemetry.update();
             }
             else if (gamepad2.left_bumper){
                 if(stopGripLeftBumper)
