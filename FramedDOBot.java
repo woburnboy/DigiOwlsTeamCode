@@ -64,7 +64,7 @@ public class FramedDOBot
     public Servo    latchLockServo = null;
 
     public static final double MID_LATCH_SERVO       =  0.5 ;
-    public static final double ZERO_LATCH_SERVO       =  0 ;
+    public static final double ZERO_LATCH_SERVO       =  0.2 ;
     public static final double END_LATCH_SERVO       =  .9 ;
     public static final double MID_SERVO       =  0.5 ;
 
@@ -127,9 +127,10 @@ public class FramedDOBot
         leftDriveBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         rightDriveBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         latchMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
         // Define and initialize ALL installed servos.
-        leftElbow.setPosition(MID_SERVO);
-        rightElbow.setPosition(MID_SERVO);
+        leftElbow.setPosition(1);
+        rightElbow.setPosition(0);
         latchLockServo.setPosition(ZERO_LATCH_SERVO);
     }
 
