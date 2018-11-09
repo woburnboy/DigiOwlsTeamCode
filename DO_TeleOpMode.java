@@ -36,7 +36,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.Range;
 
 @TeleOp(name="Digital Owls TeleOp Mode", group="DigiOwls")
-@Disabled
+//@Disabled
 public class DO_TeleOpMode extends LinearOpMode {
     private FramedDOBot robot = new FramedDOBot();   // Use a Pushbot's hardware
     private  Boolean stopGripLeftBumper = false;
@@ -58,7 +58,7 @@ public class DO_TeleOpMode extends LinearOpMode {
             if(gamepad1.left_stick_y != 0) { // support FWD and BWD movement
                 MoveRobot(powerRearWheels);
             }
-            else if(gamepad1.right_stick_y != 0){
+            else if(gamepad1.right_stick_x != 0){
                 TurnRobot(powerRearWheels);
             }
             else if( (gamepad1.left_trigger != 0) || (gamepad1.right_trigger != 0)) { //Moving the pully for latching and unlatching
@@ -73,7 +73,7 @@ public class DO_TeleOpMode extends LinearOpMode {
             else if(gamepad1.b) {
                 robot.latchLockServo.setPosition(FramedDOBot.ZERO_LATCH_SERVO);
             }
-            else if(gamepad1.y) // toggel the power for rear wheel
+            else if(gamepad1.a) // toggel the power for rear wheel
             {
                 if(powerRearWheels)
                     powerRearWheels = false;
@@ -90,7 +90,7 @@ public class DO_TeleOpMode extends LinearOpMode {
             }
             else if(gamepad2.left_stick_y != 0){
                 double dist  =  Range.clip(gamepad1.left_stick_y, -1.0, 1.0) ;
-//                robot.shoulder.setPower(-dist);
+                robot.shoulder.setPower(-dist);
             }
             else if (gamepad2.left_bumper){
                 if(stopGripLeftBumper)
@@ -121,7 +121,7 @@ public class DO_TeleOpMode extends LinearOpMode {
             else {
                 robot.AllDrivesSetPower(0, true);
                 robot.latchMotor.setPower(0);
-//                robot.shoulder.setPower(0);
+                robot.shoulder.setPower(0);
             }
         }
         robot.latchLockServo.setPosition(FramedDOBot.ZERO_LATCH_SERVO);

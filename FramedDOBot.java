@@ -94,7 +94,7 @@ public class FramedDOBot
         rightElbow = hwMap.get(Servo.class, "righthand");
         latchLockServo  = hwMap.get(Servo.class, "latchLockServo");
 
-//        shoulder        = hwMap.get(DcMotor.class,   "shoulder"); //Commented by Amit
+        shoulder        = hwMap.get(DcMotor.class,   "shoulder"); //Commented by Amit
         palm            = hwMap.get(DcMotor.class,"palm");
         latchMotor      = hwMap.get(DcMotor.class, "latchMotor");
         leftDrive       = hwMap.get(DcMotor.class,    "leftdrive");
@@ -102,7 +102,7 @@ public class FramedDOBot
         rightDrive      = hwMap.get(DcMotor.class,   "rightdrive");
         rightDriveBack  = hwMap.get(DcMotor.class,"rightdriveBack");
 
-//        shoulder.setDirection(DcMotor.Direction.REVERSE); //Commented by Amit
+        shoulder.setDirection(DcMotor.Direction.REVERSE); //Commented by Amit
         palm.setDirection(DcMotor.Direction.REVERSE); //Commented by Amit
         latchMotor.setDirection(DcMotor.Direction.REVERSE);     // Set to REVERSE if using AndyMark motors
         leftDrive.setDirection(DcMotor.Direction.REVERSE);      // Set to REVERSE if using AndyMark motors
@@ -115,13 +115,13 @@ public class FramedDOBot
         // Set all motors to zero power
         AllDrivesSetPower(0, true);
         latchMotor.setPower(0);
-//        shoulder.setPower(0); //Commented by Amit
+        shoulder.setPower(0); //Commented by Amit
         palm.setPower(0);
         //        leftArm.setPower(0);
 
         // Set all motors to run without encoders.
         // May want to use RUN_USING_ENCODERS if encoders are installed.
-//        shoulder.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER); //Commented by Amit
+        shoulder.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         leftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         rightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         leftDriveBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
