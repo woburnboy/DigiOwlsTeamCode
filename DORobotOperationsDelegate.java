@@ -29,9 +29,17 @@
 
 package org.firstinspires.ftc.teamcode;
 
+import android.graphics.Color;
+
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
+
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+
+import java.util.Locale;
 
 public class DORobotOperationsDelegate  {
     /* Declare OpMode members. */
@@ -147,6 +155,43 @@ public class DORobotOperationsDelegate  {
             robot.AllDrivesSetPower(0, true);
             // Turn off RUN_TO_POSITION
             robot.AllDrivesSetMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        }
+    }
+
+    public void findAndPushYellow(LinearOpMode mode, ColorSensor sensorColor, DistanceSensor sensorDistance) {
+        sensorColor.enableLed(true);
+
+
+        // hsvValues is an array that will hold the hue, saturation, and value information.
+        float hsvValues[] = {0F, 0F, 0F};
+
+        // values is a reference to the hsvValues array.
+        final float values[] = hsvValues;
+
+        // sometimes it helps to multiply the raw RGB values with a scale factor
+        // to amplify/attentuate the measured values.
+        final double SCALE_FACTOR = 255;
+
+
+        // loop and read the RGB and distance data.
+        // Note we use opModeIsActive() as our loop condition because it is an interruptible method.
+        while (mode.opModeIsActive()) {
+            // convert the RGB values to HSV values.
+            // multiply by the SCALE_FACTOR.
+            // then cast it back to int (SCALE_FACTOR is a double)
+            Color.RGBToHSV((int) (sensorColor.red() * SCALE_FACTOR),
+                    (int) (sensorColor.green() * SCALE_FACTOR),
+                    (int) (sensorColor.blue() * SCALE_FACTOR),
+                    hsvValues);
+
+            // send the info back to driver station using telemetry function.
+            mode.telemetry.addData("Distance (cm)",
+                    String.format(Locale.US, "%.02f", sensorDistance.getDistance(DistanceUnit.CM)));
+            mode.telemetry.addData("Alpha", sensorColor.alpha());
+            mode.telemetry.addData("Red  ", sensorColor.red());
+            mode.telemetry.addData("Green", sensorColor.green());
+            mode.telemetry.addData("Blue ", sensorColor.blue());
+            mode.telemetry.addData("Hue", hsvValues[0]);
         }
     }
 }
