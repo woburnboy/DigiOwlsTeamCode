@@ -57,18 +57,24 @@ public class DORobotOperationsDelegate  {
     private static final double     COUNTS_PER_INCH_Latch         = (COUNTS_PER_MOTOR_REV_Latch * DRIVE_GEAR_REDUCTION_Latch) /
             (WHEEL_DIAMETER_INCHES_Latch * 3.1415);
 
+    public void dropToken(LinearOpMode mode){
+        if (mode.opModeIsActive()) {
+            robot.tokenServo.setPosition(0.6);
+        }
+    }
+
     public void unlockLatchServo(LinearOpMode mode, double timeOut){
         // Ensure that the opmode is still active
         if (mode.opModeIsActive()) {
             robot.latchLockServo.setPosition(FramedDOBot.END_LATCH_SERVO);
 
             runtime.reset();
+// commenting due to broken latch motor
             while (mode.opModeIsActive() &&
-                   (robot.latchMotor.isBusy() ) &&
-                   (runtime.seconds() < timeOut)){
+                   (robot.latchMotor.isBusy())){
             }
             mode.telemetry.addData("unlatching the lock servo %.1f s", runtime.seconds());
-            mode.telemetry.update();
+//            mode.telemetry.update();
         }
     }
 
@@ -84,9 +90,10 @@ public class DORobotOperationsDelegate  {
             robot.latchMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             robot.latchMotor.setPower(Math.abs(speed));
             runtime.reset();
-            while (mode.opModeIsActive() &&
-                    (robot.latchMotor.isBusy() ) &&
-                    (runtime.seconds() < timeOut)){
+            while (mode.opModeIsActive()
+                    && (robot.latchMotor.isBusy() )
+//                    && (runtime.seconds() < timeOut)
+                    ){
 
             }
             // Stop all motion;
@@ -96,7 +103,7 @@ public class DORobotOperationsDelegate  {
             robot.latchMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
             mode.telemetry.addData(operation, "takes %.1f s", runtime.seconds());
-            mode.telemetry.update();
+//            mode.telemetry.update();
         }
     }
 

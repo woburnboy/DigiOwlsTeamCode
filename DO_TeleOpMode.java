@@ -29,7 +29,6 @@
 
 package org.firstinspires.ftc.teamcode;
 
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -55,6 +54,7 @@ public class DO_TeleOpMode extends LinearOpMode {
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
         // run until the end of the match (driver presses STOP)
+        Boolean setDrivesZero = true;
         while (opModeIsActive()) {
             // Run the robot in the telemode (FWD, BWD and turn)
             if(gamepad1.left_stick_y != 0) { // support FWD and BWD movement
@@ -67,7 +67,7 @@ public class DO_TeleOpMode extends LinearOpMode {
                 MovePully(); //latching and unlatching
             }
             else if ((gamepad1.right_bumper) || (gamepad1.left_bumper)) {
-                LateralMove(DRIVE_SPEED);
+                LateralMove(0.5);
             }
             else if (gamepad1.x){
                 robot.latchLockServo.setPosition(FramedDOBot.END_LATCH_SERVO);
@@ -82,22 +82,38 @@ public class DO_TeleOpMode extends LinearOpMode {
                 else
                     powerRearWheels = true;
             }
-            else if (gamepad2.right_stick_y != 0) {
-                double elbowOffset = Range.clip(gamepad2.right_stick_y, 0, 1);
-                robot.leftElbow.setPosition(elbowOffset);
-                robot.rightElbow.setPosition(1 - elbowOffset);
-                telemetry.addData("Joystick ",  "Joy value %f, Offset %f, Servo1 %f, Servo 2 %f",
-                        gamepad2.right_stick_y, elbowOffset,robot.leftElbow.getPosition(), robot.rightElbow.getPosition() );
-                telemetry.update();
+            else {
+                robot.AllDrivesSetPower(0, true);
+                robot.latchMotor.setPower(0);
             }
-            else if(gamepad2.left_stick_y != 0){
-                double dist  =  Range.clip(gamepad2.left_stick_y, -1.0, 1.0) ;
+            if(gamepad2.right_stick_x != 0){
+                double dist  =  Range.clip(gamepad2.right_stick_x, -1.0, 1.0) ;
                 robot.shoulder.setPower(-dist/1.3);
                 telemetry.addData("Shoulder ",  "Shoulder Position %d",
                         robot.shoulder.getCurrentPosition());
                 telemetry.update();
             }
-            else if (gamepad2.left_bumper){
+            else {
+                robot.shoulder.setPower(0);
+            }
+            if(gamepad2.y){
+                robot.leftElbow.setPosition(1);
+                robot.rightElbow.setPosition(0);
+            }
+            else if (gamepad2.a){
+                robot.leftElbow.setPosition(0);
+                robot.rightElbow.setPosition(1);
+            }
+//            else if (gamepad2.right_stick_y != 0) {
+//                double elbowOffset = Range.clip(gamepad2.right_stick_y, 0, 1);
+//                robot.leftElbow.setPosition(elbowOffset);
+//                robot.rightElbow.setPosition(1 - elbowOffset);
+//                telemetry.addData("Joystick ",  "Joy value %f, Offset %f, Servo1 %f, Servo 2 %f",
+//                        gamepad2.right_stick_y, elbowOffset,robot.leftElbow.getPosition(), robot.rightElbow.getPosition() );
+//                telemetry.update();
+//            }
+
+            if (gamepad2.left_bumper){
                 if(stopGripLeftBumper)
                 {
                     robot.palm.setPower(0);
@@ -123,11 +139,6 @@ public class DO_TeleOpMode extends LinearOpMode {
                     stopGripRightBumper = true;
                 }
             }
-            else {
-                robot.AllDrivesSetPower(0, true);
-                robot.latchMotor.setPower(0);
-                robot.shoulder.setPower(0);
-            }
         }
         robot.latchLockServo.setPosition(FramedDOBot.ZERO_LATCH_SERVO);
     }
@@ -135,10 +146,10 @@ public class DO_TeleOpMode extends LinearOpMode {
     private void MovePully(){
         //Latch motor is for reverse direction
         if(gamepad1.left_trigger != 0) {
-            robot.latchMotor.setPower(-Range.clip(gamepad1.left_trigger, -1.0, 1.0));
+            robot.latchMotor.setPower(-Range.clip(gamepad1.left_trigger/1.3, -1.0, 1.0));
         }
         else if (gamepad1.right_trigger != 0){
-            robot.latchMotor.setPower(Range.clip(gamepad1.right_trigger, -1.0, 1.0));
+            robot.latchMotor.setPower(Range.clip(gamepad1.right_trigger/1.3, -1.0, 1.0));
         }
         else
         {
@@ -167,7 +178,7 @@ public class DO_TeleOpMode extends LinearOpMode {
     }
 
     private void LateralMove(double speed){
-        if(gamepad1.right_bumper) {
+        if(gamepad1.left_bumper) {
             speed = (-1) * speed;
         }
         robot.leftDrive.setPower(-speed);

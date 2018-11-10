@@ -33,7 +33,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
-@Autonomous (name = "Red Crater is Behind: Auto", group = "DigiOwls")
+@Autonomous (name = "Crater is Behind: Auto", group = "DigiOwls")
 //@Disabled
 public class DOAutonomousRedCraterBehind extends LinearOpMode {
     DORobotOperationsDelegate robotOpsDelegate = new DORobotOperationsDelegate();
@@ -47,6 +47,9 @@ public class DOAutonomousRedCraterBehind extends LinearOpMode {
          * The init() method of the hardware class does all the work here
          */
         robotOpsDelegate.robot.init(hardwareMap);
+        robotOpsDelegate.robot.leftElbow.setPosition(0);
+        robotOpsDelegate.robot.rightElbow.setPosition(1);
+
         robotOpsDelegate.robot.AllDrivesSetMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         robotOpsDelegate.robot.AllDrivesSetMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
@@ -54,39 +57,59 @@ public class DOAutonomousRedCraterBehind extends LinearOpMode {
         waitForStart();
         // reset the timeout time and start motion.
         robotOpsDelegate.runtime.reset();
-        RunInToPath1();
+        try {
+            RunInToPath1();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
 
-    private void RunInToPath1() {
+    private void RunInToPath1() throws InterruptedException {
         telemetry.setAutoClear(false);
 
         //Unlatch robot
-//        //First we move a bit up
-//        robotOpsDelegate.UnLatchRobot(this, DRIVE_SPEED, -0.8, 5, "Unlatching the robot");
-//        //Then we unlock the latch Servo
-//        robotOpsDelegate.unlockLatchServo(this,5);
-//        // then we bring down the robot
-//        robotOpsDelegate.UnLatchRobot(this, DRIVE_SPEED, 3.5, 5, "Unlatching the robot");
+        //First we move a bit up
+        robotOpsDelegate.UnLatchRobot(this, DRIVE_SPEED, -1.0, 5, "Unlatching the robot");
+        //Then we unlock the latch Servo
+        robotOpsDelegate.unlockLatchServo(this,1);
+        // then we bring down the robot
+        robotOpsDelegate.UnLatchRobot(this, DRIVE_SPEED, 7.8, 5, "Unlatching the robot");
 
         //run lateral
-        robotOpsDelegate.encoderDrive(this, DRIVE_SPEED,-4,4,4,-4, 5.0, "Move away (right) from notch", true);
+        robotOpsDelegate.encoderDrive(this, DRIVE_SPEED,-6,6,6,-6, 5.0, "Move away (right) from notch", true);
 
         //run forward
-        robotOpsDelegate.encoderDrive(this, 0.9,12,12,12,12, 5.0, "Move forward", false);
+        robotOpsDelegate.encoderDrive(this, DRIVE_SPEED,24,24,24,24, 5.0, "Move forward", false);
 
+        //Bring Elevator Down
+        robotOpsDelegate.UnLatchRobot(this, DRIVE_SPEED, -8, 5, "Unlatching the robot");
+        //run come 7 inches behind
+        robotOpsDelegate.encoderDrive(this,DRIVE_SPEED,-7,-7,-7,-7, 5.0, "Move back ", false);
         //run lateral to left for 10inch to hit all the jewels
 //        //Gyanesh MoveLeftScanAndHitJewel();
 //
         //Turn to left
-        robotOpsDelegate.encoderDrive(this, DRIVE_SPEED,-20, 20, -20, 20, 5000, "Lateral left", true);
+        robotOpsDelegate.encoderDrive(this, DRIVE_SPEED,20, -20, 20, -20, 5000, "Right Turn to move backwards", true);
 
         //run towards wall
-        robotOpsDelegate.encoderDrive(this, DRIVE_SPEED,48, 48, 48, 48, 5000, "Lateral right", false);
+        robotOpsDelegate.encoderDrive(this, 0.9,-40, -40, -40, -40, 5000, "Run backward", true);
 
-//        //Turn slight left
-        robotOpsDelegate.encoderDrive(this, DRIVE_SPEED,-16, 16, -16, 16, 5000, "slight left", true);
+//        //Turn slight right
+        robotOpsDelegate.encoderDrive(this, DRIVE_SPEED,-10, 10, -10, 10, 5000, "slight right", true);
 
+        robotOpsDelegate.encoderDrive(this, 0.9,-55, -55, -55,-55, 5000, "Reaching zone", false);
+        //robotOpsDelegate.encoderDrive(this, TURN_SPEED,20, -20, 20, -20, 5000, "Lateral left", true);
+
+        sleep(500);
+        //To-Do
+        robotOpsDelegate.dropToken(this);
+        sleep(500);
+
+        //Start the reverse Journey
+        robotOpsDelegate.encoderDrive(this, 0.9,110, 110, 110,110, 5000, "Coming Back ", true);
+
+        /*Gyanesh commented to simplify
         //run towards team's zone
         robotOpsDelegate.encoderDrive(this, 0.9,60, 60, 60,60, 5000, "Reaching zone", false);
 //
@@ -107,6 +130,7 @@ public class DOAutonomousRedCraterBehind extends LinearOpMode {
 
         //run forward and touch the wall of crater
         robotOpsDelegate.encoderDrive(this, 0.9,30,30,30,30, 5.0, "Move forward", false);
-
+*/
+        telemetry.update();
     }
 }
